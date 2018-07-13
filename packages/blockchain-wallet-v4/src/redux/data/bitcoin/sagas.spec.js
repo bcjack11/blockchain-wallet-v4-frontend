@@ -8,6 +8,7 @@ import * as selectors from '../../selectors'
 import { Remote } from 'blockchain-wallet-v4/src'
 import { expectSaga, testSaga } from 'redux-saga-test-plan'
 import sagas from './sagas'
+import reducers from '../reducers'
 
 const blockchainData = { wallet: {}, info: {} }
 const transactionHistory = { address: {}, sent: {}, received: {} }
@@ -72,6 +73,30 @@ describe('bitcoin data sagas', () => {
         .put(A.fetchDataFailure(error.message))
         .next()
         .isDone()
+    })
+
+    describe('state change', () => {
+      it('should add bitcoin data to the state', () => {
+        return expectSaga(dataBtcSagas.fetchData)
+          .withReducer(reducers)
+          .provide([
+            [select(selectors.wallet.getContext), mockContext]
+          ])
+          .run()
+          .then((result) => {
+            // console.log(result)
+            expect(result.storeState.bitcoin).toEqual({
+              addresses: { 
+                xpub6BvQUYyon9wcJUgBUjhQ7E5iSSHVzsraSqmqiRLKUXoXE4PkFZ2h8x7yuuXZdFeJSQgTX2o8n4kq4z32aGFkfkC6ZBrW9hJR1jDuEdA7uJa: { 
+                  address: 'xpub6BvQUYyon9wcJUgBUjhQ7E5iSSHVzsraSqmqiRLKUXoXE4PkFZ2h8x7yuuXZdFeJSQgTX2o8n4kq4z32aGFkfkC6ZBrW9hJR1jDuEdA7uJa' 
+                } 
+              },
+              info: {},
+              latest_block: {} 
+            });
+          })
+
+      })
     })
   })
 

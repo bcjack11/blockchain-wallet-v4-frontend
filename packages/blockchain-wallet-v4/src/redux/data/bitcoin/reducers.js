@@ -38,6 +38,7 @@ const bitcoinReducer = (state = INITIAL_STATE, action) => {
         info: Remote.Success(info),
         latest_block: Remote.Success(latest_block)
       }
+      console.log(data)
       return merge(state, data)
     }
     case AT.FETCH_BITCOIN_DATA_FAILURE: {
